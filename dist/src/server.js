@@ -28,9 +28,11 @@ async function bootstrap() {
     await fastify.register(auth_1.authRoutes);
     await fastify.register(game_1.gameRoutes);
     await fastify.register(score_1.scoreRoutes);
-    const port = process.env.PORT || 5000;
+    const host = '0.0.0.0';
+    const port = +(process.env.PORT || 3333);
     await fastify.listen({
-        port: +port
+        port,
+        host
     });
 }
 bootstrap();
