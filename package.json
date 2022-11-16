@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
@@ -27,7 +27,6 @@
     "fastify": "^4.9.2",
     "node-fetch": "^3.2.10",
     "short-unique-id": "^4.4.4",
-    "zod": "^3.19.1",
-    "tsx": "^3.11.0"
+    "zod": "^3.19.1"
   }
 }
