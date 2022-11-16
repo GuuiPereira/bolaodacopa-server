@@ -30,7 +30,6 @@ async function bootstrap() {
     await fastify.register(score_1.scoreRoutes);
     await fastify.listen({
         port: 3333,
-        host: '0.0.0.0'
     });
 }
 bootstrap();
