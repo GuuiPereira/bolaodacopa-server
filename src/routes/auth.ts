@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify"
 import { prisma } from "../lib/prisma"
-import fetch from 'node-fetch';
+import axios from 'axios';
 import { z } from 'zod';
 import { authenticate } from "../plugins/authenticate";
 
@@ -20,14 +20,25 @@ export async function authRoutes(fastify: FastifyInstance) {
     });
 
     const { access_token } = createUserBody.parse(request.body);
-    const userResponde = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      method: 'GET',
+
+
+    const userResponse = await axios({
+      method: 'get',
+      url: 'https://www.googleapis.com/oauth2/v2/userinfo',
       headers: {
         Authorization: `Bearer ${access_token}`
       }
-    });
+    })
+   
 
-    const userData = await userResponde.json();
+    // const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    //   method: 'GET',
+    //   headers: {
+    //     Authorization: `Bearer ${access_token}`
+    //   }
+    // });
+
+    const userData = await userResponse.data;
 
     const userInfoSchema = z.object({
       id: z.string(),
