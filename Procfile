@@ -1,1 +1,1 @@
-web: tsx watch src/server.ts
+web: npm run dev
