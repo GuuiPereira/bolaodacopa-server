@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRoutes = void 0;
 const prisma_1 = require("../lib/prisma");
-const node_fetch_1 = __importDefault(require("node-fetch"));
+const axios_1 = __importDefault(require("axios"));
 const zod_1 = require("zod");
 const authenticate_1 = require("../plugins/authenticate");
 async function authRoutes(fastify) {
@@ -19,13 +19,20 @@ async function authRoutes(fastify) {
             access_token: zod_1.z.string()
         });
         const { access_token } = createUserBody.parse(request.body);
-        const userResponde = await (0, node_fetch_1.default)('https://www.googleapis.com/oauth2/v2/userinfo', {
-            method: 'GET',
+        const userResponse = await (0, axios_1.default)({
+            method: 'get',
+            url: 'https://www.googleapis.com/oauth2/v2/userinfo',
             headers: {
                 Authorization: `Bearer ${access_token}`
             }
         });
-        const userData = await userResponde.json();
+        // const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        //   method: 'GET',
+        //   headers: {
+        //     Authorization: `Bearer ${access_token}`
+        //   }
+        // });
+        const userData = await userResponse.data;
         const userInfoSchema = zod_1.z.object({
             id: zod_1.z.string(),
             email: zod_1.z.string().email(),
