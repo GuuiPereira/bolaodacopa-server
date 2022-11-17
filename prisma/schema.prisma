@@ -49,6 +49,7 @@ model User {
   avatarUrl String?
   createdAt DateTime @default(now())
 
+  refresh_token   RefreshToken?
   participatingAt Participant[]
   ownPools        Pool[]
 }
@@ -90,4 +91,13 @@ model Score {
   pool          Pool        @relation(fields: [poolId], references: [id])
 
   @@unique([participantId, gameId, poolId])
+}
+
+model RefreshToken {
+  id        String @id @default(cuid())
+  expiresIn Int
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @unique
+
+  @@map("refresh_token")
 }
