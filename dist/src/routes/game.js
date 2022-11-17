@@ -16,6 +16,9 @@ async function gameRoutes(fastify) {
             orderBy: {
                 date: 'desc',
             },
+            where: {
+                date: new Date()
+            },
             include: {
                 guesses: {
                     where: {
