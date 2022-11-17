@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify"
 import { prisma } from "../lib/prisma"
-import { z } from 'zod';
+import { date, z } from 'zod';
 import { authenticate } from "../plugins/authenticate"
 
 export async function gameRoutes(fastify: FastifyInstance) {
@@ -18,6 +18,9 @@ export async function gameRoutes(fastify: FastifyInstance) {
     const games = await prisma.game.findMany({
       orderBy: {
         date: 'desc',
+      },
+      where:{
+        date: new Date()
       },
       include: {
         guesses: {
