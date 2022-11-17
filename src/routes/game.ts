@@ -19,16 +19,13 @@ export async function gameRoutes(fastify: FastifyInstance) {
       orderBy: {
         date: 'desc',
       },
-      where:{
-        date: new Date()
-      },
       include: {
         guesses: {
           where: {
             participant: {
               userId: request.user.sub,
-              poolId: id
-            }
+              poolId: id,
+            }  
           }
         }
       }

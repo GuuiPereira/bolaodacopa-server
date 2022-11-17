@@ -19,8 +19,9 @@ async function bootstrap() {
     await fastify.register(cors_1.default, {
         origin: true
     });
+    const secret = process.env.SECREJWT || 'bolaodacopa2022';
     await fastify.register(jwt_1.default, {
-        secret: 'nlw22'
+        secret
     });
     await fastify.register(pool_1.poolRoutes);
     await fastify.register(user_1.userRoutes);

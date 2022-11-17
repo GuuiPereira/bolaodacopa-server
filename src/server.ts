@@ -19,8 +19,10 @@ async function bootstrap() {
     origin: true
   })
 
+  const secret = process.env.SECREJWT || 'bolaodacopa2022'
+
   await fastify.register(jwt, {
-    secret: 'nlw22'
+    secret
   });
 
   await fastify.register(poolRoutes);
