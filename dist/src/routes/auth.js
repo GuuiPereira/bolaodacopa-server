@@ -98,7 +98,7 @@ async function authRoutes(fastify) {
             avatarUrl: user.avatarUrl
         }, {
             sub: user.id,
-            expiresIn: '20s'
+            expiresIn: '360s'
         });
         const refreshTokenExpired = (0, dayjs_1.default)().isAfter(dayjs_1.default.unix(refreshToken.expiresIn));
         if (refreshTokenExpired) {

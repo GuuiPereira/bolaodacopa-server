@@ -119,7 +119,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       avatarUrl: user.avatarUrl
     }, {
       sub: user.id,
-      expiresIn: '20s'
+      expiresIn: '360s'
     })
 
 
