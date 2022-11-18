@@ -113,5 +113,36 @@ async function gameRoutes(fastify) {
         }
         return reply.status(204).send();
     });
+    fastify.post('/pools/gamesbyparticipant', {
+        onRequest: [authenticate_1.authenticate]
+    }, async (request) => {
+        const gamePoolBody = zod_1.z.object({
+            participantId: zod_1.z.string(),
+        });
+        const { participantId } = gamePoolBody.parse(request.body);
+        const guesses = await prisma_1.prisma.participant.findUnique({
+            where: {
+                id: participantId,
+            },
+            include: {
+                guesses: {
+                    select: {
+                        gameId: true,
+                        firstTeamPoints: true,
+                        secondTeamPoints: true,
+                        game: {
+                            select: {
+                                firstTeamCountryCode: true,
+                                secondTeamCountryCode: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        return {
+            guesses
+        };
+    });
 }
 exports.gameRoutes = gameRoutes;

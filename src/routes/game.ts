@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify"
 import { prisma } from "../lib/prisma"
 import { date, z } from 'zod';
 import { authenticate } from "../plugins/authenticate"
+import { transformDocument } from "@prisma/client/runtime";
 
 export async function gameRoutes(fastify: FastifyInstance) {
 
@@ -146,5 +147,42 @@ export async function gameRoutes(fastify: FastifyInstance) {
     return reply.status(204).send();
 
   })
-}
 
+  fastify.post('/pools/gamesbyparticipant', {
+    onRequest: [authenticate]
+  }, async (request) => {
+
+    const gamePoolBody = z.object({
+      participantId: z.string(),
+    });
+
+    const { participantId } = gamePoolBody.parse(request.body);
+
+    const guesses = await prisma.participant.findUnique({
+        where: {
+          id: participantId,
+        },
+        include: {
+          guesses: {
+            select:{
+              gameId: true,
+              firstTeamPoints: true,
+              secondTeamPoints: true, 
+              game: {
+                select:{
+                  firstTeamCountryCode: true,
+                  secondTeamCountryCode: true
+                }
+              }
+            }
+          }
+        }
+    })
+
+    return {
+      guesses
+    }
+
+  })
+
+}
