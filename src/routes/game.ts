@@ -101,6 +101,8 @@ export async function gameRoutes(fastify: FastifyInstance) {
       }
     });
 
+    const weight:number = game?.weight || 1;
+
     const firstTeamWin: boolean = firstTeamResult > secondTeamResult;
     const secondTeamWin: boolean = firstTeamResult < secondTeamResult;
     const draw: boolean = firstTeamResult === secondTeamResult;
@@ -111,25 +113,25 @@ export async function gameRoutes(fastify: FastifyInstance) {
 
       if (guess.firstTeamPoints === firstTeamResult && guess.secondTeamPoints === secondTeamResult) {
 
-        score += 10;
+        score += (10 * weight);
 
       }
 
       if (firstTeamWin && guess.firstTeamPoints > guess.secondTeamPoints) {
 
-        score += 5;
+        score += (5 * weight);
 
       }
 
       if (secondTeamWin && guess.secondTeamPoints > guess.firstTeamPoints) {
 
-        score += 5;
+        score += (5 * weight);
 
       }
 
       if (draw && guess.firstTeamPoints === guess.secondTeamPoints) {
 
-        score += 3;
+        score += (3 * weight);
 
       }
 

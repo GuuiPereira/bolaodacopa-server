@@ -61,6 +61,7 @@ model Game {
   secondTeamCountryCode String
   firstTeamResult       Int?
   secondTeamResult      Int?
+  weight                Int?
   guesses               Guess[]
   score                 Score[]
 }
