@@ -131,7 +131,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
 
       if (draw && guess.firstTeamPoints === guess.secondTeamPoints) {
 
-        score += (3 * weight);
+        score += (5 * weight);
 
       }
 

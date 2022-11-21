@@ -101,7 +101,7 @@ async function gameRoutes(fastify) {
                 score += (5 * weight);
             }
             if (draw && guess.firstTeamPoints === guess.secondTeamPoints) {
-                score += (3 * weight);
+                score += (5 * weight);
             }
             await prisma_1.prisma.score.create({
                 data: {
