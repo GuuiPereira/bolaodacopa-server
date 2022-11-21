@@ -85,22 +85,23 @@ async function gameRoutes(fastify) {
                 }
             }
         });
+        const weight = game?.weight || 1;
         const firstTeamWin = firstTeamResult > secondTeamResult;
         const secondTeamWin = firstTeamResult < secondTeamResult;
         const draw = firstTeamResult === secondTeamResult;
         for (let guess of guesses) {
             let score = 0;
             if (guess.firstTeamPoints === firstTeamResult && guess.secondTeamPoints === secondTeamResult) {
-                score += 10;
+                score += (10 * weight);
             }
             if (firstTeamWin && guess.firstTeamPoints > guess.secondTeamPoints) {
-                score += 5;
+                score += (5 * weight);
             }
             if (secondTeamWin && guess.secondTeamPoints > guess.firstTeamPoints) {
-                score += 5;
+                score += (5 * weight);
             }
             if (draw && guess.firstTeamPoints === guess.secondTeamPoints) {
-                score += 3;
+                score += (3 * weight);
             }
             await prisma_1.prisma.score.create({
                 data: {
