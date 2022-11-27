@@ -173,8 +173,14 @@ export async function gameRoutes(fastify: FastifyInstance) {
               game: {
                 select:{
                   firstTeamCountryCode: true,
-                  secondTeamCountryCode: true
+                  secondTeamCountryCode: true,
+                  score: {
+                    where:{
+                      participantId
+                    }
+                  }
                 }
+                
               }
             }
           }
