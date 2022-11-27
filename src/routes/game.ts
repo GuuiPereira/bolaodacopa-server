@@ -2,13 +2,12 @@ import { FastifyInstance } from "fastify"
 import { prisma } from "../lib/prisma"
 import { date, z } from 'zod';
 import { authenticate } from "../plugins/authenticate"
-import { transformDocument } from "@prisma/client/runtime";
 
 export async function gameRoutes(fastify: FastifyInstance) {
 
   fastify.get('/pools/:id/games', {
     onRequest: [authenticate]
-  }, async (request) => {
+  }, async (request, reply) => {
 
     const gamePoolBody = z.object({
       id: z.string(),
@@ -16,9 +15,26 @@ export async function gameRoutes(fastify: FastifyInstance) {
 
     const { id } = gamePoolBody.parse(request.params);
 
+    const pool = await prisma.pool.findUnique({
+      where: {
+        id
+      }
+    });
+
+    if (!pool) {
+      return reply.status(400).send({
+        message: "Bolão não encontrado"
+      })
+    }
+
     const games = await prisma.game.findMany({
       orderBy: {
         date: 'desc',
+      },
+      where: {
+        date: {
+          gte: pool.createdAt
+        },
       },
       include: {
         guesses: {
@@ -26,7 +42,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
             participant: {
               userId: request.user.sub,
               poolId: id,
-            }  
+            }
           }
         }
       }
@@ -101,7 +117,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
       }
     });
 
-    const weight:number = game?.weight || 1;
+    const weight: number = game?.weight || 1;
 
     const firstTeamWin: boolean = firstTeamResult > secondTeamResult;
     const secondTeamWin: boolean = firstTeamResult < secondTeamResult;
@@ -161,30 +177,30 @@ export async function gameRoutes(fastify: FastifyInstance) {
     const { participantId } = gamePoolBody.parse(request.body);
 
     const guesses = await prisma.participant.findUnique({
-        where: {
-          id: participantId,
-        },
-        include: {
-          guesses: {
-            select:{
-              gameId: true,
-              firstTeamPoints: true,
-              secondTeamPoints: true, 
-              game: {
-                select:{
-                  firstTeamCountryCode: true,
-                  secondTeamCountryCode: true,
-                  score: {
-                    where:{
-                      participantId
-                    }
+      where: {
+        id: participantId,
+      },
+      include: {
+        guesses: {
+          select: {
+            gameId: true,
+            firstTeamPoints: true,
+            secondTeamPoints: true,
+            game: {
+              select: {
+                firstTeamCountryCode: true,
+                secondTeamCountryCode: true,
+                score: {
+                  where: {
+                    participantId
                   }
                 }
-                
               }
+
             }
           }
         }
+      }
     })
 
     return {

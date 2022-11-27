@@ -7,14 +7,29 @@ const authenticate_1 = require("../plugins/authenticate");
 async function gameRoutes(fastify) {
     fastify.get('/pools/:id/games', {
         onRequest: [authenticate_1.authenticate]
-    }, async (request) => {
+    }, async (request, reply) => {
         const gamePoolBody = zod_1.z.object({
             id: zod_1.z.string(),
         });
         const { id } = gamePoolBody.parse(request.params);
+        const pool = await prisma_1.prisma.pool.findUnique({
+            where: {
+                id
+            }
+        });
+        if (!pool) {
+            return reply.status(400).send({
+                message: "Bolão não encontrado"
+            });
+        }
         const games = await prisma_1.prisma.game.findMany({
             orderBy: {
                 date: 'desc',
+            },
+            where: {
+                date: {
+                    gte: pool.createdAt
+                },
             },
             include: {
                 guesses: {
